@@ -1,5 +1,5 @@
 #!/bin/bash
-# Modified by RADZVPNN
+# Modified by IPANG
 
 cd
 sed -i '$ i\screen -AmdS limit /root/limit.sh' /etc/rc.local
