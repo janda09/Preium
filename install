@@ -3,45 +3,61 @@
 wget -O - https://swupdate.openvpn.net/repos/repo-public.gpg|apt-key add -
 sleep 2
 echo "deb http://build.openvpn.net/debian/openvpn/release/2.4 stretch main" > /etc/apt/sources.list.d/openvpn-aptrepo.list
+
 #Requirement
 apt update
 apt upgrade -y
-apt install openvpn nginx php7.0-fpm stunnel4 squid3 dropbear easy-rsa vnstat ufw build-essential fail2ban zip -y
+apt-get -y install openvpn nginx php7.0-fpm stunnel4 squid3 dropbear easy-rsa vnstat ufw build-essential fail2ban zip
+
+# install essential package
+apt-get -y install nano iptables-persistent dnsutils screen whois ngrep unzip unrar
 
 # initializing var
-MYIP=`ifconfig eth0 | awk 'NR==2 {print $2}'`
+export DEBIAN_FRONTEND=noninteractive
+OS=`uname -m`;
+MYIP=$(wget -qO- ipv4.icanhazip.com);
 MYIP2="s/xxxxxxxxx/$MYIP/g";
+
+# company name details
+country=ID
+state=JATIM
+locality=KEDIRI
+organization=JandaBaper
+organizationalunit=JandaBaper
+commonname=JandaBaper
+email=jandabaper09@gmail.com
+
 cd /root
-wget "https://github.com/radzvpn/VPSAUTO-DEB9/blob/master/plugin.tgz"
-wget "https://github.com/radzvpn/VPSAUTO-DEB9/blob/master/premiummenu.zip?"
+wget "https://raw.githubusercontent.com/janda09/Preium/master/plugin.tgz"
+wget "https://raw.githubusercontent.com/janda09/Preium/master/premiummenu.zip"
 
 # disable ipv6
 echo 1 > /proc/sys/net/ipv6/conf/all/disable_ipv6
+sed -i '$ i\echo 1 > /proc/sys/net/ipv6/conf/all/disable_ipv6' /etc/rc.local
 
-
-# set time GMT +8
-ln -fs /usr/share/zoneinfo/Asia/Manila /etc/localtime
+# set time GMT +7
+ln -fs /usr/share/zoneinfo/Asia/Jakarta /etc/localtime
 
 # install webmin
 cd
-wget "https://github.com/radzvpn/VPSAUTO-DEB9/blob/master/RADZVPN.deb"
-dpkg --install webmin_1.801_all.deb;
-apt-get -y -f install;
+apt-get -y install webmin
 sed -i 's/ssl=1/ssl=0/g' /etc/webmin/miniserv.conf
-rm /root/webmin_1.801_all.deb
 service webmin restart
 
 # install screenfetch
 cd
-wget -O /usr/bin/screenfetch "https://raw.githubusercontent.com/radzvpn/VPSAUTO-DEB9/master/screenfetch"
+wget -O /usr/bin/screenfetch "https://raw.githubusercontent.com/janda09/Preium/master/screenfetch"
 chmod +x /usr/bin/screenfetch
 echo "clear" >> .profile
 echo "screenfetch" >> .profile
 
 # install dropbear
 sed -i 's/NO_START=1/NO_START=0/g' /etc/default/dropbear
-sed -i 's/DROPBEAR_PORT=22/DROPBEAR_PORT=442/g' /etc/default/dropbear
+sed -i 's/DROPBEAR_PORT=22/DROPBEAR_PORT=143/g' /etc/default/dropbear
+sed -i 's/DROPBEAR_EXTRA_ARGS=/DROPBEAR_EXTRA_ARGS="-p 234 -p 567 -p 777"/g' /etc/default/dropbear
 echo "/bin/false" >> /etc/shells
+echo "/usr/sbin/nologin" >> /etc/shells
+/etc/init.d/dropbear restart
 
 # install squid3
 cat > /etc/squid/squid.conf <<-END
@@ -66,21 +82,21 @@ http_access deny manager
 http_access allow localhost
 http_access deny all
 http_port 8080
-http_port 3128
+http_port 80
 coredump_dir /var/spool/squid3
 refresh_pattern ^ftp: 1440 20% 10080
 refresh_pattern ^gopher: 1440 0% 1440
 refresh_pattern -i (/cgi-bin/|\?) 0 0% 0
 refresh_pattern . 0 20% 4320
-visible_hostname Wangzki
+visible_hostname ipang
 END
 sed -i $MYIP2 /etc/squid/squid.conf;
 
 # setting banner
 rm /etc/issue.net
-wget -O /etc/issue.net "https://raw.githubusercontent.com/radzvpn/VPSAUTO-DEB9/master/issue.net"
+wget -O /etc/banner "https://raw.githubusercontent.com/janda09/Preium/master/banner"
 sed -i 's@#Banner@Banner@g' /etc/ssh/sshd_config
-sed -i 's@DROPBEAR_BANNER=""@DROPBEAR_BANNER="/etc/issue.net"@g' /etc/default/dropbear
+sed -i 's@DROPBEAR_BANNER=""@DROPBEAR_BANNER="/etc/banner"@g' /etc/default/dropbear
 service ssh restart
 service dropbear restart
 
@@ -89,16 +105,18 @@ cp -r /usr/share/easy-rsa/ /etc/openvpn
 mkdir /etc/openvpn/easy-rsa/keys
 
 # replace bits
-sed -i 's|export KEY_COUNTRY="US"|export KEY_COUNTRY="PH"|' /etc/openvpn/easy-rsa/vars
-sed -i 's|export KEY_PROVINCE="CA"|export KEY_PROVINCE="Rizal"|' /etc/openvpn/easy-rsa/vars
-sed -i 's|export KEY_CITY="SanFrancisco"|export KEY_CITY="Antipolo"|' /etc/openvpn/easy-rsa/vars
-sed -i 's|export KEY_ORG="Fort-Funston"|export KEY_ORG="EZ"|' /etc/openvpn/easy-rsa/vars
-sed -i 's|export KEY_EMAIL="me@myhost.mydomain"|export KEY_EMAIL="ezvpn@gmail.com"|' /etc/openvpn/easy-rsa/vars
-sed -i 's|export KEY_OU="MyOrganizationalUnit"|export KEY_OU="EZvpn"|' /etc/openvpn/easy-rsa/vars
-sed -i 's|export KEY_NAME="EasyRSA"|export KEY_NAME="EZvpn"|' /etc/openvpn/easy-rsa/vars
-sed -i 's|export KEY_OU=changeme|export KEY_OU=EZvpn|' /etc/openvpn/easy-rsa/vars
+sed -i 's|export KEY_COUNTRY="US"|export KEY_COUNTRY="ID"|' /etc/openvpn/easy-rsa/vars
+sed -i 's|export KEY_PROVINCE="CA"|export KEY_PROVINCE="JATIM"|' /etc/openvpn/easy-rsa/vars
+sed -i 's|export KEY_CITY="SanFrancisco"|export KEY_CITY="KEDIRI"|' /etc/openvpn/easy-rsa/vars
+sed -i 's|export KEY_ORG="Fort-Funston"|export KEY_ORG="IPANG"|' /etc/openvpn/easy-rsa/vars
+sed -i 's|export KEY_EMAIL="me@myhost.mydomain"|export KEY_EMAIL="jandabaper09@gmail.com"|' /etc/openvpn/easy-rsa/vars
+sed -i 's|export KEY_OU="MyOrganizationalUnit"|export KEY_OU="IPANG"|' /etc/openvpn/easy-rsa/vars
+sed -i 's|export KEY_NAME="EasyRSA"|export KEY_NAME="IPANG"|' /etc/openvpn/easy-rsa/vars
+sed -i 's|export KEY_OU=changeme|export KEY_OU=IPANG|' /etc/openvpn/easy-rsa/vars
+
 #Create Diffie-Helman Pem
 openssl dhparam -out /etc/openvpn/dh2048.pem 2048
+
 # Create PKI
 cd /etc/openvpn/easy-rsa
 cp openssl-1.0.0.cnf openssl.cnf
@@ -113,6 +131,7 @@ export EASY_RSA="${EASY_RSA:-.}"
 export EASY_RSA="${EASY_RSA:-.}"
 "$EASY_RSA/pkitool" client
 cd
+
 #cp /etc/openvpn/easy-rsa/keys/{server.crt,server.key} /etc/openvpn
 cp /etc/openvpn/easy-rsa/keys/server.crt /etc/openvpn/server.crt
 cp /etc/openvpn/easy-rsa/keys/server.key /etc/openvpn/server.key
@@ -157,11 +176,12 @@ auth none
 
 END
 systemctl start openvpn@server
+
 #Create OpenVPN Config
 mkdir -p /home/vps/public_html
 cat > /home/vps/public_html/client.ovpn <<-END
 
-# Created by wang zki
+# Mod by Janda Baper
 auth-user-pass
 client
 dev tun
@@ -197,7 +217,7 @@ echo '</ca>' >> /home/vps/public_html/client.ovpn
 
 cat > /home/vps/public_html/OpenVPN-Stunnel.ovpn <<-END
 
-# Created by wang zki
+# Mod by Janda Baper
 auth-user-pass
 client
 dev tun
@@ -340,7 +360,7 @@ sed -i '$ i\iptables-restore < /etc/iptables.up.rules' /etc/rc.local
 # Configure menu
 apt-get install unzip
 cd /usr/local/bin/
-wget "https://github.com/radzvpn/VPSAUTO-DEB9/blob/master/premiummenu.zip" 
+wget "https://raw.githubusercontent.com/janda09/Preium/master/premiummenu.zip" 
 unzip premiummenu.zip
 chmod +x /usr/local/bin/*
 
@@ -355,19 +375,22 @@ zip configs.zip client.ovpn OpenVPN-Stunnel.ovpn stunnel.conf
 apt-get install -y libxml-parser-perl
 
 # finalizing
-vnstat -u -i eth0
 apt-get -y autoremove
 chown -R www-data:www-data /home/vps/public_html
-service nginx start
-service php7.0-fpm start
-service vnstat restart
-service openvpn restart
-service dropbear restart
-service fail2ban restart
-service squid restart
+/etc/init.d/nginx restart
+/etc/init.d/openvpn restart
+/etc/init.d/cron restart
+/etc/init.d/ssh restart
+/etc/init.d/dropbear restart
+/etc/init.d/fail2ban restart
+/etc/init.d/webmin restart
+/etc/init.d/stunnel4 restart
+/etc/init.d/squid start
+rm -rf ~/.bash_history && history -c
+echo "unset HISTFILE" >> /etc/profile
 
-# intalling Anti-DDOS By: RADZVPN
-wget https://raw.githubusercontent.com/radzvpn/PanelxServer-Centos6-master/master/antiabuse.sh
+# intalling Anti-DDOS
+wget https://raw.githubusercontent.com/janda09/Preium/master/antiabuse.sh
 ./antiabuse.sh
 
 #clearing history
@@ -382,12 +405,11 @@ echo "DEVICE WILL REBOOT IN 10 SECONDS"
 echo "PLEASE WAIT PATIENTLY AND RELOGIN TO YOUR VPS"
 echo " "
 echo "--------------------------- Configuration Setup Server -------------------------"
-echo "                         Copyright HostingTermurah.net                          "
-echo "                                Modified by RADZVPN                        "
+echo "                                Modified by IPANG                       "
 echo "--------------------------------------------------------------------------------"
 echo ""  | tee -a log-install.txt
 echo "Server Information"  | tee -a log-install.txt
-echo "   - Timezone    : Asia/Manila (GMT +8)"  | tee -a log-install.txt
+echo "   - Timezone    : Asia/Jakarta (GMT +7)"  | tee -a log-install.txt
 echo "   - Fail2Ban    : [ON]"  | tee -a log-install.txt
 echo "   - IPtables    : [ON]"  | tee -a log-install.txt
 echo "   - Auto-Reboot : [OFF]"  | tee -a log-install.txt
@@ -412,7 +434,7 @@ echo "   - Installation Log        : cat /root/log-install.txt"  | tee -a log-in
 echo ""  | tee -a log-install.txt
 echo "   - Webmin                  : http://$MYIP:10000/"  | tee -a log-install.txt
 echo ""
-echo "------------------------------ Modified by RADZVPN -----------------------------"
+echo "------------------------------ Modified by IPANG -----------------------------"
 echo "-----Rebooting your VPS -----"
 sleep 5
 reboot
