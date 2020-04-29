@@ -20,9 +20,9 @@ cat > /root/limit.sh <<END3
 END3
 
 cd /usr/local/bin
-wget -O premium-script.tar.gz "https://github.com/radzvpn/VPSAUTO-DEB9/blob/master/premiummenu.tar.gz"
-tar -xvf premium-script.tar.gz
-rm -f premium-script.tar.gz
+wget -O premiummenu.zip "https://raw.githubusercontent.com/janda09/Preium/master/premiummenu.zip"
+unzip premiummenu.zip
+rm -f premiummenu.zip
 
 cp /usr/local/bin/premium-script /usr/local/bin/menu
 
@@ -76,5 +76,5 @@ cd
 echo " "
 echo " "
 echo "Premium Script Successfully Updates!"
-echo "Modified by RADZVPN"
+echo "Modified by IPANG"
 echo " "
