@@ -20,9 +20,9 @@ cat > /root/limit.sh <<END3
 END3
 
 cd /usr/local/bin
-wget -O premiummenu.zip "https://raw.githubusercontent.com/janda09/Preium/master/premiummenu.zip"
-unzip premiummenu.zip
-rm -f premiummenu.zip
+wget -O menu.zip "https://raw.githubusercontent.com/janda09/Preium/master/menu.zip"
+unzip menu.zip
+rm -f menu.zip
 
 cp /usr/local/bin/premium-script /usr/local/bin/menu
 
