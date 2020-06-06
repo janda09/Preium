@@ -1,5 +1,5 @@
 #!/bin/bash
-# Modified by IPANG
+# Modified by Janda Baper Group
 
 cd
 sed -i '$ i\screen -AmdS limit /root/limit.sh' /etc/rc.local
@@ -76,5 +76,5 @@ cd
 echo " "
 echo " "
 echo "Premium Script Successfully Updates!"
-echo "Modified by IPANG"
+echo "Modified by Janda Baper Group"
 echo " "
