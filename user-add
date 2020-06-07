@@ -1,9 +1,9 @@
 #!/bin/bash
 source /usr/local/sbin/base-script
-TITLE='=•=Mod By Janda Baper Group=•='
+TITLE='=•= Janda Baper Group =•='
 clear
 echo -e ""
-echo -e "$TITLE"
+echo -e "$TITLE" | lolcat -a
 echo -e " Create Account"
 echo -e ""
 read -p $'\e[32m  Username: \e[0m' User
@@ -13,7 +13,7 @@ egrep "^$User" /etc/passwd >/dev/null
 if [ $? -eq 0 ]; then
 clear
 echo -e ""
-echo -e "$TITLE"
+echo -e "$TITLE" | lolcat -a
 echo -e "\e[31m Username Already Exists on your server, please try another username\e[0m."
 exit 0
 else
@@ -39,8 +39,8 @@ egrep "^$User" /etc/passwd &> /dev/null
 echo -e "$Pass\n$Pass\n" | passwd $User &> /dev/null
 clear
 echo -e ""
-echo -e "$TITLE"
-echo -e " Your Account:"
+echo -e "$TITLE" | lolcat -a
+echo -e "Akun SSHne Ndan:"
 echo -e "\e[32m  Username: \e[0m"$User
 echo -e "\e[32m  Password: \e[0m"$Pass
 echo -e "\e[32m  Account Expiry: \e[0m"$Expiration_Display
