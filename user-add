@@ -1,6 +1,6 @@
 #!/bin/bash
 source /usr/local/sbin/base-script
-$TITLE='=•=Mod By Janda Baper Group=•='
+TITLE='=•=Mod By Janda Baper Group=•='
 clear
 echo -e ""
 echo -e "$TITLE"
@@ -49,8 +49,10 @@ echo -e "\e[32m  Host/IP: \e[0m"$IPADDR
 echo -e "\e[32m  OpenSSH Port: \e[0m"$opensshport
 echo -e "\e[32m  Dropbear Port: \e[0m"$dropbearport
 echo -e "\e[32m  SSL Port: \e[0m"$stunnel4port
-echo -e "\e[32m  Proxy Ports: \e[0m"$squidport
+echo -e "\e[32m  Squid: \e[0m"$squidport
 echo -e "\e[32m  OpenVPN Port: \e[0m"$openvpnport
+echo -e "\e[32m  Cnfig OpenVPN: http://$IPADDR:81/configs.zip \e[0m"
+echo -e "\e[32m  Badvpn: 7500 \e[0m"
 echo -e ""
 echo -e ""
 fi
