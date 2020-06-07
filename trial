@@ -1,9 +1,9 @@
 #!/bin/bash
 source /usr/local/sbin/base-script
-TITLE='=•=Mod By Janda Baper Group=•='
+TITLE='=•= Janda Baper Group =•='
 clear
 echo -e ""
-echo -e "$TITLE"
+echo -e "$TITLE" | loctat -a
 
 MYIP=$(wget -4qO- http://ipinfo.io/ip)
 User=trial`</dev/urandom tr -dc X-Z0-9 | head -c4`
@@ -27,7 +27,7 @@ useradd -e `date -d "$Days days" +"%Y-%m-%d"` -s /bin/false -M $User &> /dev/nul
 echo -e "$Pass\n$Pass\n" | passwd $User &> /dev/null
 clear
 echo -e ""
-echo -e " Trial Account"
+echo -e " Trial Akun SSH"
 echo -e "\e[32m   Host/IP: \e[0m"$MYIP
 echo -e "\e[32m   Username: \e[0m"$User
 echo -e "\e[32m   Password: \e[0m"$Pass
